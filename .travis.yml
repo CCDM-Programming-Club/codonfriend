@@ -5,3 +5,13 @@ sudo: false
 cache: packages
 after_success:
   - Rscript -e 'covr::codecov()'
+
+# Install dependencies
+addons:
+  apt:
+    packages:
+      - doxygen
+      - doxygen-doc
+      - doxygen-latex
+      - doxygen-gui
+      - graphviz
