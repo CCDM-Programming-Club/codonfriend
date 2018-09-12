@@ -29,6 +29,7 @@ devtools::install_github("https://github.com/CCDM-Programming-Club/codonfriend.g
 
 ## Contributing
 
+Please see the [contribution guide](CONTRIBUTING.md)
 
 Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md).
 By participating in this project you agree to abide by its terms.
