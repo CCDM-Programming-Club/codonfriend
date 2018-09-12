@@ -9,6 +9,10 @@
 #' # Parse that file.
 #' cai_table <- read_cai(cai_path)
 #' head(cai_table)
+#' 
+#' @importFrom stringr str_trim
+#' @importFrom stringr str_match
+#' @export
 read_cai <- function(path) {
   lines <- readLines(path)
 
@@ -16,15 +20,15 @@ read_cai <- function(path) {
   # Could also handle comment lines here
   clean_lines <- subset(
     lines,
-    (stringr::str_trim(lines) != "")
+    (str_trim(lines) != "")
   )
 
   # Extract the important stuff using a regular expression
   reg <- "Sequence: (.+) CAI: (.+)"
-  matches <- stringr::str_match(clean_lines, reg)
+  matches <- str_match(clean_lines, reg)
 
   data <- data.frame(
-     seqid = stringr::str_trim(matches[,2]),
+     seqid = str_trim(matches[,2]),
      cai = as.numeric(matches[,3]),
      stringsAsFactors = FALSE
   )

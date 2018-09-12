@@ -21,4 +21,5 @@ cai_path <- system.file("extdata", "lmac.cai", package = "codonfriend")
 # Parse that file.
 cai_table <- read_cai(cai_path)
 head(cai_table)
+
 }
