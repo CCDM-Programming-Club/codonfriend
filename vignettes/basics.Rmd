@@ -1,0 +1,35 @@
+---
+title: "Reading and manipulating CAI and CUT tables"
+author: "CCDM Programming Club"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library("codonfriend")
+devtools::load_all()
+```
+
+
+
+```{r}
+library("codonfriend")
+
+cai_path <- system.file("extdata", "lmac.cai", package = "codonfriend")
+
+cai_table <- read_cai(cai_path)
+head(cai_table)
+```
+
+
+```{r}
+plot(1:5)
+```
