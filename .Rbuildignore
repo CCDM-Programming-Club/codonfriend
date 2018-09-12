@@ -4,3 +4,5 @@
 ^\.Rprofile$
 ^data-raw$
 ^CONDUCT\.md$
+^\.travis\.yml$
+^codecov\.yml$
