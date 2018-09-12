@@ -1,9 +1,34 @@
 Package: codonfriend
-Title: What the Package Does (one line, title case)
+Title: Analyse Codon Usage With Your Pals
 Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Authors@R: c(
+    person("Darcy", "Jones", email = "darcy.a.jones@postgrad.curtin.edu.au", role = c("aut", "cre")),
+    person("Robert", "Syme", email = "rob.syme@gmail.com", role = "aut"),
+    person("Stefania", "Bertazzoni", email = "stef.bertazzoni@gmail.com", role = "aut"),
+    person("Johannes", "Debler", email = "johannes.debler@curtin.edu.au", role = "aut"),
+    person("Mark", "Derbyshire", email = "mark.derbyshire@curtin.edu.au", role = "aut"),
+    person("James", "Hane", email = "james.hane@curtin.edu.au", role = "aut"),
+    person("Leon", "Lenzo", email = "leon.lenzo@curtin.edu.au", role = "aut"),
+    person("Paula", "Moolhuijzen", email = "paula.moolhuijzen@curtin.edu.au", role = "aut"),
+    person("Emilie", "Perez-Wright", email = "emilie.perez-wright@curtin.edu.au", role = "aut"),
+    person("Huyen", "Phan Phan", email = "Huyenphan.Phan@curtin.edu.au", role = "aut"),
+    person("Lina", "Rozano", email = "lina.rozano@postgrad.curtin.edu.au", role = "aut"),
+    person("Renu", "Saradadevi", email = "renusaradadevi@gmail.com", role = "ctb"))
+Description: Analyses codon adaptation indices and codon usage tables
+    and finds anomalous genes or genomes.
 Depends: R (>= 3.5.0)
-License: What license is it under?
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+RoxygenNote: 6.1.0
+Imports:
+    dplyr,
+    ggplot2,
+    magrittr,
+    stringr,
+    tibble
+Suggests:
+    knitr,
+    rmarkdown,
+    testthat
+VignetteBuilder: knitr
