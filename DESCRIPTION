@@ -16,17 +16,13 @@ Authors@R: c(
     person("Renu", "Saradadevi", email = "renusaradadevi@gmail.com", role = "ctb"))
 Description: Analyses codon adaptation indices and codon usage tables
     and finds anomalous genes or genomes.
-Depends: R (>= 3.5.0)
+Depends: R (>= 3.4.0)
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.0
 Imports:
-    dplyr,
-    ggplot2,
-    magrittr,
-    stringr,
-    tibble
+    stringr
 Suggests:
     knitr,
     rmarkdown,

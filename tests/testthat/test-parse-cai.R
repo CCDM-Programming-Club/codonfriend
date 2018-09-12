@@ -4,11 +4,11 @@ library(codonfriend)
 test_that("read_cai Parses well formatted file", {
   string <- "Sequence: gene1 CAI: 0.1
 Sequence: gene2 CAI: 0.2"
-  
+
   # NB textConnection creates a file-like object for readLines to work on.
   con <- textConnection(string)
   table <- read_cai(con)
-  
+
   expect_equal(dim(table), c(2, 2))
   expect_equal(names(table), c("seqid", "cai"))
   expect_equal(table[, "seqid"], c("gene1", "gene2"))
@@ -21,10 +21,10 @@ test_that("read_cai Strips trailing empty lines", {
   string <- "Sequence: gene1 CAI: 0.1
 Sequence: gene2 CAI: 0.2
 "
-  
+
   con <- textConnection(string)
   table <- read_cai(con)
-  
+
   expect_equal(dim(table), c(2, 2))
 })
 
@@ -39,7 +39,11 @@ Sequence: a      CAI: 0.4"
   table <- read_cai(con)
 
   expect_equal(dim(table), c(5, 2))
-  expect_equal(table[, "seqid"], c("gene1#garbage", "gene2 with spaces", "RS|001_05-gene.oo@", "*& ^%$#@!/?", "a"))
+  expect_equal(
+    table[, "seqid"],
+    c("gene1#garbage", "gene2 with spaces",
+      "RS|001_05-gene.oo@", "*& ^%$#@!/?", "a")
+  )
 })
 
 test_that("read_cai Invalid CAIs as NA", {
@@ -53,7 +57,7 @@ Sequence: gene3 CAI: NA"
   # NB con is consumed by read_cai, need second object
   con <- textConnection(string)
   table <- suppressWarnings(read_cai(con))
-  
+
   expect_equal(dim(table), c(3, 2))
   expect_equal(table[, "cai"], c(0.1, NA, NA))
 })
@@ -63,6 +67,6 @@ test_that("read_cai Empty file as zero rows", {
 
   con <- textConnection(string)
   table <- read_cai(con)
-  
+
   expect_equal(dim(table), c(0, 2))
 })

@@ -28,8 +28,8 @@ read_cai <- function(path) {
   matches <- str_match(clean_lines, reg)
 
   data <- data.frame(
-     seqid = str_trim(matches[,2]),
-     cai = as.numeric(matches[,3]),
+     seqid = str_trim(matches[, 2]),
+     cai = as.numeric(matches[, 3]),
      stringsAsFactors = FALSE
   )
   return(data)
