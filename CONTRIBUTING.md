@@ -3,6 +3,7 @@
 This package is developed as part of a regular "coding club" within our research centre.
 Anyone is welcome to get involved, but maybe create an issue on GitHub to introduce yourself first!
 
+
 ## R packaging
 
 This package is setup following the guidelines in Hadley Wickham's "R packages" book <http://r-pkgs.had.co.nz/>.
@@ -15,26 +16,7 @@ I highly recommend that anyone with some familiarity with programming have a loo
 It explains a lot about R's internal datastructures, what the difference between `[` and `[[` is, and an introduction to how classes work in R.
 
 
-## Style guide
-
-Having a consistent coding style is important for readability and comprehensibility.
-We each develop our own little shortcuts for conveying information, but are rarely consistent with each other or even ourselves over time.
-Please adhere to the style-guide layed out in the "Advanced R" book <http://adv-r.had.co.nz/Style.html> and defer to googles style guide where Hadley doesn't specify it <https://google.github.io/styleguide/Rguide.xml>.
-If you see that something doesn't adhere to that standard, please change it and submit a pull request.
-
-To help keep style consistent you can run a [linter](https://en.wikipedia.org/wiki/Lint_(software)) on the code using `devtools` and `lintr`.
-
-```r
-devtools::lint()
-```
-
-## Useful tips
-
-I'll flesh out a list of tips for working with `devtools` and Rstudio over the next little while.
-The information will all be in the "R packages" book, but this will have copy-pasteable code snippets suitable for our project.
-
-
-### Initial setup
+## Initial setup
 
 1) Make sure you have [git](https://git-scm.com/) and [R (version >= 3.4.0)](https://www.r-project.org/) installed.
 I would also suggest installing or updating [Rstudio](https://www.rstudio.com/products/RStudio/#Desktop) if you don't already have another favourite IDE for R.
@@ -66,7 +48,8 @@ If you've already cloned the git repository, pull the latest version of it from 
 NB. If you have lots of old packages you'll probably need to update them.
 You might also like to see if you can get set up in a Packrat virtual environment.
 
-### Checking the package
+
+## Checking the package
 
 "Checking" the package just makes sure that everything is configured properly, and that any dependencies you have are installed etc.
 
@@ -83,7 +66,7 @@ But otherwise everything should be fine.
 Try to rerun checks fairly regularly to catch problems quickly.
 
 
-### Build the package
+## Build the package
 
 R packages are basically just glorified `RData` objects.
 Building the package during development prepares that RData object, so that you can import it like you would load any other package.
@@ -99,7 +82,7 @@ library("codonfriend")
 You'll now have access to any exported functions from your library in the R console.
 
 
-### Run the tests
+## Run the tests
 
 We will run some tests using [testthat](http://testthat.r-lib.org/) to help make sure that our code works and is correct.
 This will help us check that changes we make don't break each others' or earlier work.
@@ -130,38 +113,21 @@ devtools::test()
 In the console you should then see whether tests pass or fail, and for failures you'll get details of how the test failed.
 
 
-### Documentation
+## Style guide
 
-We can automatically document how to use functions by adding special comments before the functions.
-Check out this <http://r-pkgs.had.co.nz/man.html> page for details of how to write them, or follow the example of existing functions.
+Having a consistent coding style is important for readability and comprehensibility.
+We each develop our own little shortcuts for conveying information, but are rarely consistent with each other or even ourselves over time.
+Please adhere to the style-guide layed out in the "Advanced R" book <http://adv-r.had.co.nz/Style.html> and defer to googles style guide where Hadley doesn't specify it <https://google.github.io/styleguide/Rguide.xml>.
+If you see that something doesn't adhere to that standard, please change it and submit a pull request.
 
-Generating the documentation will populate the `man` folder automatically based on these special comments.
-
-
-### Vignettes
-
-Vignettes are like tutorials.
-In our project they are written as [Rmarkdown](https://rmarkdown.rstudio.com/) files.
-You can run all of the code and output the vignette by opening the `.Rmd` file and clicking `Knit` at the top of the editor window.
-
-
-### Example data
-
-We currently have two example data files.
-Both are from an early _Leptosphaeria maculans_ genome and are output from EMBOSS tools.
-One is the codon usage table (`lmac.cut`) and the other has the codon adaptation indices for each gene (`lmac.cai`).
-
-You can find the path to these files on any system with codonfriend installed using the commands.
+To help keep style consistent you can run a [linter](https://en.wikipedia.org/wiki/Lint_(software)) on the code using `devtools` and `lintr`.
 
 ```r
-cai_path <- system.file("extdata", "lmac.cai", package = "codonfriend")
-cut_path <- system.file("extdata", "lmac.cut", package = "codonfriend")
+devtools::lint()
 ```
 
-Any files that you place in the folder `inst/extdata` will be available like this.
 
-
-### Exporting functions from the package
+## Exporting functions from the package
 
 By default all functions in R packages are private, meaning that we can't access them outside of the package's source code.
 To make a function available to users (and to our vignettes) you need to "export" it.
@@ -176,10 +142,10 @@ foo <- function(x, y, z) {
 }
 ```
 
-
 Learn more about the `NAMESPACE` file see <http://r-pkgs.had.co.nz/namespace.html>
 
-### Using external packages within our package
+
+## Using external packages within our package
 
 It is considered bad practice to put `library()` or `require()` function calls in our R package's source code.
 Instead this should be managed by the `NAMESPACE` file, but like the exports we also do this with special comments.
@@ -187,7 +153,7 @@ Instead this should be managed by the `NAMESPACE` file, but like the exports we 
 To make an external function available to a function in the package add this special comment above the function definition.
 
 ```r
-@importFrom stringr str_match
+#' @importFrom stringr str_match
 foo <- function(x, y) {
   z <- str_match(x, y)
   return(z)
@@ -211,7 +177,7 @@ The `::` alternative won't add an entry to the `NAMESPACE` file, and incurs a sl
 Learn more about the `NAMESPACE` file see <http://r-pkgs.had.co.nz/namespace.html>
 
 
-### Adding a dependency for the package
+## Adding a dependency for the package
 
 If we know that our package must use functions from another package, we need to tell R to install them when users install our package.
 Dependencies are specified in the `DESCRIPTION` file.
@@ -226,3 +192,72 @@ devtools::use_package("ggplot2")
 
 This will add that package to the `DESCRIPTION` file.
 You can also specify whether it should be in the `Imports` or `Suggests` section by specifying the `type` argument.
+
+
+## Documentation
+
+We can automatically document how to use functions by adding special comments before the functions.
+Check out this <http://r-pkgs.had.co.nz/man.html> page for details of how to write them, or follow the example of existing functions.
+
+Generating the documentation will populate the `man` folder automatically based on these special comments.
+
+
+## Vignettes
+
+Vignettes are like tutorials.
+In our project they are written as [Rmarkdown](https://rmarkdown.rstudio.com/) files.
+You can run all of the code and output the vignette by opening the `.Rmd` file and clicking `Knit` at the top of the editor window.
+
+
+## Example data
+
+We currently have two example data files.
+Both are from an early _Leptosphaeria maculans_ genome and are output from EMBOSS tools.
+One is the codon usage table (`lmac.cut`) and the other has the codon adaptation indices for each gene (`lmac.cai`).
+
+You can find the path to these files on any system with codonfriend installed using the commands.
+
+```r
+cai_path <- system.file("extdata", "lmac.cai", package = "codonfriend")
+cut_path <- system.file("extdata", "lmac.cut", package = "codonfriend")
+```
+
+Any files that you place in the folder `inst/extdata` will be available like this.
+
+
+## Using Git effectively
+
+When you are working with other people on a Git project, you should avoid committing directly to the `master` git branch.
+Instead, when you want to create a new feature or function you create a new branch from `master`, then you can work in that `feature` branch for as long as you want, and when your changes are complete you merge the `feature` and `master` branches together using a "pull request".
+
+There are a few reasons why we do this.
+
+1) It avoids having your work conflict with others' work.
+2) The pull request should always be reviewed by someone else to make sure it looks ok. 
+   E.g. is correct, passes all unit tests, has proper style etc.
+3) If you really mess something up or decide you should have taken a different approach, you can just delete the branch and start again without it affecting anyone elses work.
+4) It makes it easier to see when bugs were introduced (and therefor how we might fix them).
+
+
+Here is a basic workflow that you might try:
+
+1) Pull the most recent master branch, `git pull origin master`.
+2) Create and checkout a new branch off of the master branch, `git checkout -b myfeature`.
+   NB. you can go back to the master branch at anytime without losing `myfeature` with the command `git checkout master`.
+3) Make whatever changes that you need to, you can add commits to the `myfeature` branch as you go.
+4) When you've finished and are ready for other people to look at merging the feature, you can push it to GitHub using
+   `git push -u origin myfeature` (make sure you've checked out the actual branch that you want to push i.e `myfeature`).
+   The `-u` flag means that it will create a new branch in the GitHub repo,
+   this isn't normally needed since the `master` branch already exists.
+5) Within GitHub, open up your branch and click "Send Pull Request".
+   Someone else will review your work, and add comments or suggestions.
+   You can still make edits to your feature branch and push them to the new branch on GitHub.
+   Those changes will be included in the pull request.
+6) You're done! Well done!
+
+
+In RStudio you can do all of the things i described for the shell from the `Git` tab in the top-right hand window pane.
+You can switch branches from the drop down menu at the far right.
+The button to create new branches is just next to that dropdown box (three little purple boxes in an "L" shape).
+
+Happy Git-ing!
