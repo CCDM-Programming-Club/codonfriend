@@ -24,6 +24,11 @@ RoxygenNote: 6.1.0
 Imports:
     stringr
 Suggests:
+    tibble,
+    magrittr,
+    ggplot2,
+    dplyr,
+    mclust,
     knitr,
     rmarkdown,
     testthat,

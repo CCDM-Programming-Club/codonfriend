@@ -1,0 +1,215 @@
+---
+title: "darcys analysis"
+author: "Darcy Jones"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Here I am looking at the CAI distributions to decide what is a normal CAI.
+First I'll load my packages.
+
+```{r}
+library("tibble")
+library("magrittr")
+library("ggplot2")
+library("dplyr")
+library("mclust")
+
+library("codonfriend")
+```
+
+Our package comes with a single example CAI file from _Leptosphaeria maculans_.
+We know that _L. mac_ has strict compartmentalisation of some of it's genomic regions.
+E.g AT-rich and RIPped regions.
+
+```{r}
+cai_path <- system.file("extdata", "lmac.cai", package = "codonfriend")
+cai_table <- read_cai(cai_path)
+head(cai_table)
+```
+
+Let's look at the data.
+I'm expecting sort of a bimodal distribution, e.g. one for AT-rich and one for core regions.
+
+```{r}
+ggplot(cai_table, aes(x = cai)) + geom_density()
+```
+
+This is the smoothed density of all CAI values, and it certainly isn't bimodal.
+It almost appears to be a skewed normal distribution.
+Let's test for normality.
+
+```{r}
+# Annoyingly, max number shapiro test can take is 5000.
+# So we randomly sample 5000 cai values.
+shapiro.test(sample(cai_table$cai, 5000))
+```
+
+Because the p-value is very low i'd conclude that this isn't normally distributed.
+$H_0$ for shapiro-wilk test is that the data are normally distributed.
+
+Do we see the same trend for all of the CAI files?
+Let's parse them all now...
+
+```{r}
+# List all files then add the directory name
+# Read each file and add a new column to contain the filename.
+# Store the tibble dataframes in a list.
+# Concatenate the list of dataframes with do.call(rbind, ...)
+tables <- list.files("~/data/CAI-Renu/02_CAI") %>%
+  sapply(function(f) file.path("~/data/CAI-Renu/02_CAI", f)) %>%
+  lapply(FUN = function(f) {t <- as.tibble(read_cai(f)); t$genome <- f; t }) %>%
+  do.call(rbind, args = .)
+
+head(tables)
+```
+
+Ok, now we can compare the distributions of all tables.
+This will get a bit messy.
+
+```{r}
+ggplot(tables, aes(x = cai, colour = genome)) +
+  geom_density() +
+  theme(legend.position="none")
+```
+
+So most genomes have a skewed distribution of CAIs.
+There are too many genomes in here to pick out individuals, but it seems that some tend to have tighter distributions with modes closer to 1.
+It's interesting to me that some of them have modes around 6-7.
+Probably the genomes with wide distributions and lower modes are the ones with compartmentalisation.
+
+What's the distribution of the central statistics?
+
+### Mean
+
+```{r}
+tables %>%
+  group_by(genome) %>%
+  summarise(cai = mean(cai)) %>%
+  ggplot(aes(x = cai)) + geom_density()
+```
+
+### Median
+
+```{r}
+tables %>%
+  group_by(genome) %>%
+  summarise(cai = median(cai)) %>%
+  ggplot(aes(x = cai)) + geom_density()
+```
+
+### Mode
+
+```{r}
+tables %>%
+  group_by(genome) %>%
+  summarise(cai = {dd <- density(cai); dd$x[which.max(dd$y)]}) %>%
+  ggplot(aes(x = cai)) + geom_density()
+```
+
+### Standard deviation
+
+```{r}
+tables %>%
+  group_by(genome) %>%
+  summarise(cai = sd(cai)) %>%
+  ggplot(aes(x = cai)) + geom_density()
+```
+
+
+It's interesting that there seem to consistently be about 3 normal-ish distributions in the mean, mode, and median tables.
+
+Let's see if we can figure out which species those distributions contain.
+
+```{r}
+medians <- tables %>%
+  group_by(genome) %>%
+  summarise(cai = median(cai))
+
+
+gmm <- Mclust(medians$cai)
+summary(gmm)
+```
+
+```{r}
+str(gmm)
+```
+
+```{r}
+medians$classif <- gmm$classification
+ggplot(medians, aes(x = cai, fill = as.factor(classif))) + geom_density(alpha = 0.5)
+```
+
+They aren't quite perfect normal distributions, but they are the three groups that I saw in our data.
+What's in there?
+
+```{r}
+(medians %>% filter(classif == 1))$genome
+```
+
+```{r}
+(medians %>% filter(classif == 2))$genome
+```
+
+
+```{r}
+(medians %>% filter(classif == 3))$genome
+```
+
+
+I don't know the JGI short species ids by heart. We'll have to find a way to map them.
+But we can start to tease apart the distributions using these clusters.
+
+Let's add the classifications to the big table containing all CAI values from all ~1000 ish genomes.
+
+```{r}
+tables_classif <- left_join(tables, medians[, c("genome", "classif")], by="genome")
+head(tables_classif)
+```
+
+```{r}
+ggplot(tables_classif, aes(x = cai, colour = genome)) +
+  geom_density() +
+  theme(legend.position="none") +
+  facet_wrap(~ as.factor(tables_classif$classif), ncol = 1)
+```
+
+Great!
+
+That's a bit cleaner.
+I'm seeing that generally the majority fall neatly into a "main" distribution.
+Group 1 and 2 seem to have broader distributions, while 3 tends to have a tighter one.
+I see plenty of little tight distributions in group 1 and 2, which is odd.
+
+In anycase it is very clear that these distributions can't be fit using the same models, and it probably isn't normally distributed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+```
