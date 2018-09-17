@@ -21,6 +21,8 @@ It explains a lot about R's internal datastructures, what the difference between
 1) Make sure you have [git](https://git-scm.com/) and [R (version >= 3.4.0)](https://www.r-project.org/) installed.
 I would also suggest installing or updating [Rstudio](https://www.rstudio.com/products/RStudio/#Desktop) if you don't already have another favourite IDE for R.
 
+Windows users will need to install Rtools (<https://cran.r-project.org/bin/windows/Rtools/>) as well (not an R package, follow the link).
+
 
 2) [Setup ssh access for your github account](https://help.github.com/articles/connecting-to-github-with-ssh/).
 This means that you can clone, pull, and push to github without having to enter your password all of the time.
@@ -37,6 +39,11 @@ install.packages(c("devtools", "roxygen2", "testthat", "knitr", "rmarkdown"))
 # Install other packages used in the library
 devtools::install_dev_deps(dependencies=TRUE)
 ```
+
+NOTE: pay close attention to the console output as these are installing as some of these packages require external software to be installed.
+You may need to install packages like `xml2`, `libcurl` etc for the packages to install correctly.
+Often R gives helpful output when things are missing. If you are having trouble, create an issue on GitHub.
+
 
 4) If you are using RStudio click the "new project" button, select "Version Control" then "Git", and then enter the details for the project repo.
 If you've setup your SSH credentials make sure you enter the SSH URL to the repository i.e. `git@github.com:CCDM-Programming-Club/codonfriend.git`.
@@ -259,5 +266,9 @@ Here is a basic workflow that you might try:
 In RStudio you can do all of the things i described for the shell from the `Git` tab in the top-right hand window pane.
 You can switch branches from the drop down menu at the far right.
 The button to create new branches is just next to that dropdown box (three little purple boxes in an "L" shape).
+
+NOTE: If you don't have some of the dropdown boxes, please try updating R-studio to the latest version.
+I'm using `Version 1.1.456`.
+
 
 Happy Git-ing!
