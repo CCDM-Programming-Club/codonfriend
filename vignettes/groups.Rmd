@@ -1,0 +1,53 @@
+---
+title: "Vignette Title"
+author: "Vignette Author"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+```{r}
+library("readr")
+library("tibble")
+library("dplyr")
+library("ggplot2")
+```
+
+
+```{r}
+groups <- read_csv("cai_groups.csv")
+
+```
+
+
+```{r}
+groups <- groups %>%
+  select(genome, classif) %>%
+  unique() %>%
+  mutate(genome = gsub("~/data/CAI-Renu/02_CAI/", "", genome)) %>%
+  mutate(genome = sapply(genome, function(x) {strsplit(x, "_")[[1]][1]}))
+
+head(groups)
+```
+
+```{r}
+taxon <- read_csv("/run/media/rdrive/CCDM_Prog_10_Share-HANE0J-SE00128/ProgrammingClub/jgi_assembly/all_fastas_merged.csv") %>%
+  select(-c("filepath", "filetype", "filename", "species_names", "division"))
+head(taxon)
+```
+
+```{r}
+groups_spe <- unique(left_join(groups, taxon, by = c("genome" = "jgi_id")))
+head(groups_spe)
+```

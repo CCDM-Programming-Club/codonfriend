@@ -86,6 +86,14 @@ There are too many genomes in here to pick out individuals, but it seems that so
 It's interesting to me that some of them have modes around 6-7.
 Probably the genomes with wide distributions and lower modes are the ones with compartmentalisation.
 
+
+```{r}
+ggplot(tables, aes(x = cai)) +
+  geom_density() +
+  theme(legend.position = "none")
+```
+
+
 What's the distribution of the central statistics?
 
 ### Mean
@@ -176,6 +184,12 @@ head(tables_classif)
 ```
 
 ```{r}
+
+write.csv(tables_classif, "./cai_groups.csv" )
+```
+
+
+```{r}
 ggplot(tables_classif, aes(x = cai, colour = genome)) +
   geom_density() +
   theme(legend.position="none") +
@@ -190,6 +204,43 @@ Group 1 and 2 seem to have broader distributions, while 3 tends to have a tighte
 I see plenty of little tight distributions in group 1 and 2, which is odd.
 
 In anycase it is very clear that these distributions can't be fit using the same models, and it probably isn't normally distributed.
+
+
+# Selecting the 5%
+
+### Median
+
+```{r}
+tables %>%
+  group_by(genome) %>%
+  summarise(cai = quantile(cai, 0.05)) %>%
+  ggplot(aes(x = cai)) + geom_density()
+```
+
+```{r}
+tables %>%
+  group_by(genome) %>%
+  summarise(cai = quantile(cai, 0.95)) %>%
+  ggplot(aes(x = cai)) + geom_density()
+```
+
+```{r}
+tables %>%
+  group_by(genome) %>%
+  summarise(n = sum(cai < quantile(cai, 0.05)) ) %>%
+  ggplot(aes(x = n)) + geom_histogram(binwidth = 20)
+```
+
+
+```{r}
+tables %>%
+  group_by(genome) %>%
+  summarise(n = sum(cai > quantile(cai, 0.95))) %>%
+  ggplot(aes(x = n)) + geom_histogram(binwidth = 20)
+```
+
+
+
 
 
 
