@@ -34,3 +34,33 @@ read_cai <- function(path) {
   )
   return(data)
 }
+
+
+#' Read many files and combine them.
+#' 
+#' @param paths A vector of files to parse.
+#' @param FUN The function to use to parse the files. Default `read_cai`.
+#' @param colname What to call the column added.
+#' @return A concatenated dataframe with filenames added as a new column.
+#' @examples
+#' 
+#' paths <- list.files("dir", full.names = TRUE)
+#' # or
+#' paths <- Sys.glob("dir/*.cai")
+#' df <- read_many(paths, FUN=read_cai, colname="file")
+#' head(df)
+#' 
+#' @export
+read_many <- function(paths, FUN=read_cai, colname="file") {
+  do.call(
+    rbind,
+    args = lapply(
+      paths,
+      FUN = function(f) {
+        t <- FUN(f)
+        t[colname] <- basename(f)
+        return(t)
+      }
+    )
+  )
+}
