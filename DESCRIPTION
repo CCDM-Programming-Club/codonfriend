@@ -25,6 +25,7 @@ Imports:
     stringr
 Suggests:
     tibble,
+    readr,
     magrittr,
     ggplot2,
     dplyr,
@@ -33,5 +34,6 @@ Suggests:
     rmarkdown,
     testthat,
     roxygen2,
+    ape,
     covr
 VignetteBuilder: knitr
