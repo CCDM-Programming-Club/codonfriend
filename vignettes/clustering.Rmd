@@ -29,7 +29,7 @@ library("codonfriend")
 We'll mostly be using the tables prepared in the basics notebook, so make sure you've run that first.
 
 ```{r}
-basics_dir <- "basic_results"
+basics_dir <- "basics_results"
 out_dir <- "clustering_results"
 dir.create(out_dir, showWarnings = FALSE)
 ```
