@@ -42,7 +42,7 @@ This allows us to switch between test and real data very easily.
 #base_dir <- system.file("extdata", package = "codonfriend")
 base_dir <- "/run/media/darcyabjones/scratch/process_fungal_genomes/cais"
 
-out_dir <- "basic_results"
+out_dir <- "basics_results"
 dir.create(out_dir, showWarnings = FALSE)
 ```
 
@@ -81,6 +81,7 @@ Let's parse them all now using `codonfriends` convenience function, `read_many`.
 ```{r}
 cai_files <- Sys.glob(file.path(base_dir, "*.cai"))
 cais <- read_many(cai_files, FUN=read_cai, colname="file") %>%
+  mutate(file = gsub(".cai", "", file)) %>%
   readr::write_tsv(file.path(out_dir, "joined_cais.tsv"))
 head(cais)
 ```
@@ -88,7 +89,7 @@ head(cais)
 Here we've parsed all of the `.cai` files in our base directory.
 What does the distribution look like for these?
 
-```{r}
+```{r fig.height=4, fig.width=6}
 ggplot(cais, aes(x = cai, colour = file)) +
   geom_density() +
   theme(legend.position="none")
@@ -103,7 +104,7 @@ Probably the genomes with wide distributions and lower modes are the ones with c
 What's the overall distribution of the CAIs?
 I.E. not grouped by genome?
 
-```{r}
+```{r fig.height=4, fig.width=6}
 ggplot(cais, aes(x = cai)) +
   geom_density() +
   theme(legend.position = "none")
