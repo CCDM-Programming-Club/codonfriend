@@ -39,8 +39,8 @@ This allows us to switch between test and real data very easily.
 
 ```{r}
 # This command finds the path on your computer.
-#base_dir <- system.file("extdata", package = "codonfriend")
-base_dir <- "/run/media/rdrive/CCDM_Prog_10_Share-HANE0J-SE00128/ProgrammingClub/process_fungal_genomes/cais"
+base_dir <- system.file("extdata", package = "codonfriend")
+#base_dir <- "/run/media/rdrive/CCDM_Prog_10_Share-HANE0J-SE00128/ProgrammingClub/process_fungal_genomes/cais"
 
 out_dir <- "basics_results"
 dir.create(out_dir, showWarnings = FALSE)
