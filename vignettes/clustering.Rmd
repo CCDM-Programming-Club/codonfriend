@@ -1,0 +1,96 @@
+---
+title: "Clustering"
+author: "CCDM programming club"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In the basics vignette we saw some groups of genomes with common central statistics.
+In this notebook we'll look at grouping genomes based on the CAI distributions.
+
+```{r}
+library("tibble")
+library("magrittr")
+library("ggplot2")
+library("dplyr")
+library("mclust")
+
+library("codonfriend")
+```
+
+We'll mostly be using the tables prepared in the basics notebook, so make sure you've run that first.
+
+```{r}
+basics_dir <- "basics_results"
+out_dir <- "clustering_results"
+dir.create(out_dir, showWarnings = FALSE)
+```
+
+First let's load the pre-summarised data.
+
+```{r}
+summaries <- readr::read_tsv(file.path(basics_dir, "summarised_cais.tsv"))
+head(summaries)
+```
+
+And we'll try clustering the genomes into groups by fitting multiple gaussian distributions to the medians.
+
+```{r}
+gmm <- Mclust(summaries$median)
+summary(gmm)
+```
+
+Cool, so mclust finds support for 4 clusters in the data.
+Let's have a look at those distributions.
+
+```{r fig.height=4, fig.width=6}
+summaries$classif <- gmm$classification
+readr::write_tsv(summaries, file.path(out_dir, "summarised_cais_classif.tsv"))
+
+ggplot(summaries, aes(x = median, fill = as.factor(classif))) + geom_density(alpha = 0.5)
+```
+
+They aren't quite perfect normal distributions, but they are the groups that we saw in our data.
+The narrow tall group might be from some group that is over-represented in the database.
+Possibly a yeast.
+
+Let's add the classifications to the big table containing all CAI values from all genomes.
+
+```{r}
+cais <- readr::read_tsv(file.path(basics_dir, "joined_cais.tsv")) %>%
+  left_join(summaries[, c("file", "classif")], by="file") %>%
+  readr::write_tsv(file.path(out_dir, "joined_cais_classif.tsv"))
+
+head(cais)
+```
+
+And now we can plot our 4 groups with the whole cai distributions.
+
+```{r fig.height=12, fig.width=6}
+ggplot(cais, aes(x = cai, colour = file)) +
+  geom_density() +
+  facet_wrap(~ as.factor(cais$classif), ncol = 1) +
+  theme(legend.position="none")
+```
+
+Great!
+
+That's a bit cleaner.
+I'm seeing that generally the majority fall neatly into a "main" distribution.
+Groups with higher median CAIs tend to have tighter distributions, while those with lower medians are generally broader.
+
+In anycase it is very clear that these distributions can't be fit using the same models, and they probably aren't normally distributed.
+
+
+
+
+```{r}
+```

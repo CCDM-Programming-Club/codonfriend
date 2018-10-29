@@ -24,9 +24,16 @@ RoxygenNote: 6.1.0
 Imports:
     stringr
 Suggests:
+    tibble,
+    readr,
+    magrittr,
+    ggplot2,
+    dplyr,
+    mclust,
     knitr,
     rmarkdown,
     testthat,
     roxygen2,
+    ape,
     covr
 VignetteBuilder: knitr

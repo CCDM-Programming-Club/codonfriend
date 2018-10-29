@@ -16,18 +16,146 @@ knitr::opts_chunk$set(
 )
 ```
 
+This vignette documents our workflow for basic processing of the cai data.
+Including reading data, summary statistics, and visualisation.
 
+Our package comes with a single example CAI file from _Leptosphaeria maculans_.
+We know that _L. mac_ has strict compartmentalisation of some of it's genomic regions.
+E.g AT-rich and RIPped regions.
+
+First, lets load all of the packages we'll be using.
 
 ```{r}
 library("codonfriend")
-
-cai_path <- system.file("extdata", "lmac.cai", package = "codonfriend")
-
-cai_table <- read_cai(cai_path)
-head(cai_table)
+library("ggplot2")
+library("dplyr")
+library("readr")
+library("magrittr")
 ```
+
+We'll also set some base directories that we can use to easily find and save our data.
+This allows us to switch between test and real data very easily.
 
 
 ```{r}
-plot(1:5)
+# This command finds the path on your computer.
+base_dir <- system.file("extdata", package = "codonfriend")
+#base_dir <- "/run/media/rdrive/CCDM_Prog_10_Share-HANE0J-SE00128/ProgrammingClub/process_fungal_genomes/cais"
+
+out_dir <- "basics_results"
+dir.create(out_dir, showWarnings = FALSE)
 ```
+
+For starters, let's look at a single example file in the package.
+
+```{r}
+# Read a single cai file.
+lmac_cai <- read_cai(system.file("extdata", "lmac.cai", package = "codonfriend"))
+head(lmac_cai)
+```
+
+Let's look at the data.
+I'm expecting sort of a bimodal distribution, e.g. one for AT-rich and one for core regions.
+
+```{r}
+ggplot(lmac_cai, aes(x = cai)) +
+  geom_density()
+```
+
+This is the smoothed density of all CAI values for _L. maculans_, and it certainly isn't bimodal.
+It almost appears to be a skewed normal distribution.
+Let's test for normality.
+
+```{r}
+# Annoyingly, max number shapiro test can take is 5000.
+# So we randomly sample 5000 cai values.
+shapiro.test(sample(lmac_cai$cai, 5000))
+```
+
+Because the p-value is very low we conclude that this isn't normally distributed.
+$H_0$ for shapiro-wilk test is that the data are normally distributed.
+
+Do we see the same trend for all of the CAI files?
+Let's parse them all now using `codonfriends` convenience function, `read_many`.
+
+```{r}
+cai_files <- Sys.glob(file.path(base_dir, "*.cai"))
+cais <- read_many(cai_files, FUN=read_cai, colname="file") %>%
+  mutate(file = gsub(".cai", "", file)) %>%
+  readr::write_tsv(file.path(out_dir, "joined_cais.tsv"))
+head(cais)
+```
+
+Here we've parsed all of the `.cai` files in our base directory.
+What does the distribution look like for these?
+
+```{r fig.height=4, fig.width=6}
+ggplot(cais, aes(x = cai, colour = file)) +
+  geom_density() +
+  theme(legend.position="none")
+```
+
+
+So most genomes have a skewed distribution of CAIs.
+There are too many genomes in here to pick out individuals, but it seems that some tend to have tighter distributions with modes closer to 1.
+It's interesting to me that some of them have modes around 6-7.
+Probably the genomes with wide distributions and lower modes are the ones with compartmentalisation.
+
+What's the overall distribution of the CAIs?
+I.E. not grouped by genome?
+
+```{r fig.height=4, fig.width=6}
+ggplot(cais, aes(x = cai)) +
+  geom_density() +
+  theme(legend.position = "none")
+```
+
+OK. So generally there is a left skew, with a mode above 7.5.
+It's interesting that we don't really seem to see bimodality in the distributions, though of course it's hard to tell from such a busy plot.
+
+
+## Summarising distributions
+
+Let's look at comparing distributions of CAIs using summary statistics.
+
+```{r}
+summarised_cais <- cais %>%
+  mutate(file = gsub(".cai", "", file)) %>%
+  group_by(file) %>%
+  summarise(
+    mean = mean(cai, na.rm = T),
+    median = median(cai, na.rm = T),
+    q1 = quantile(cai, 0.05),
+    q3 = quantile(cai, 0.95),
+    sd = sd(cai, na.rm = T),
+    mode = {dd <- density(cai); dd$x[which.max(dd$y)]},
+    n = n()
+  ) %>%
+  readr::write_tsv(file.path(out_dir, "summarised_cais.tsv"))
+
+head(summarised_cais)
+```
+
+What do the distributions of summary statistics look like?
+
+```{r}
+lapply(
+  c("mean", "median", "q1", "q3", "sd", "mode", "n"),
+  FUN = function(stat) {
+    ggplot(summarised_cais, aes_string(x = stat)) +
+      geom_density() +
+      ggtitle(stat)
+  }
+)
+```
+
+
+There are quite a lot of genomes with very few genes in them.
+These will just be low quality assemblies or weird annotations.
+Do they affect the CAI distributions?
+
+```{r}
+ggplot(summarised_cais, aes(x = median, y = n)) + geom_point()
+```
+
+It doesn't seem like there is any bias in their central statistics.
