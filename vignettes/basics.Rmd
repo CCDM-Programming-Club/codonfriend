@@ -50,7 +50,7 @@ For starters, let's look at a single example file in the package.
 
 ```{r}
 # Read a single cai file.
-lmac_cai <- read_cai(system.file("extdata", "lmac.cai", package = "codonfriend"))
+lmac_cai <- read_cai(system.file("extdata", "Lepmu1.cai", package = "codonfriend"))
 head(lmac_cai)
 ```
 
@@ -90,9 +90,15 @@ Here we've parsed all of the `.cai` files in our base directory.
 What does the distribution look like for these?
 
 ```{r fig.height=4, fig.width=6}
-ggplot(cais, aes(x = cai, colour = file)) +
-  geom_density() +
-  theme(legend.position="none")
+gg <- ggplot(cais, aes(x = cai, colour = file)) +
+  geom_density()
+
+# Don't show the legend if too many entries.
+if (length(unique(cais$file)) > 8) {
+  gg <- gg + theme(legend.position="none")
+}
+
+print(gg)
 ```
 
 
@@ -137,6 +143,7 @@ head(summarised_cais)
 ```
 
 What do the distributions of summary statistics look like?
+NB. These plots make more sense when using more data points.
 
 ```{r}
 lapply(
@@ -159,3 +166,4 @@ ggplot(summarised_cais, aes(x = median, y = n)) + geom_point()
 ```
 
 It doesn't seem like there is any bias in their central statistics.
+Possibly there is a weak trend for increasing medians with increasing N.
