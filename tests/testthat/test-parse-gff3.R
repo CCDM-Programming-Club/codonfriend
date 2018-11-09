@@ -22,8 +22,8 @@ teardown({
   unlink(tmp_gff1)
 })
 
-test_that("read_gff3 parses file", {
-  gff <- read_gff3(path = tmp_gff1)
+test_that("read_gff parses file", {
+  gff <- read_gff(path = tmp_gff1)
 
   # Two lines in GFF file
   expect_equal(length(gff), 2)
