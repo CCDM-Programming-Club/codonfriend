@@ -26,7 +26,7 @@ test_that("read_gff3 parses file", {
   gff <- read_gff3(path = tmp_gff1)
 
   # Two lines in GFF file
-  expect_equal(length(gff), 2)
+  expect_equal(nrow(gff), 2)
 
   # Starts are correct
   expect_equal(start(ranges(gff)), c(1, 1))
