@@ -22,7 +22,7 @@ teardown({
   unlink(tmp_gff1)
 })
 
-test_that("read_gff parses file", {
+test_that("read_gff3 parses file", {
   gff <- read_gff3(path = tmp_gff1)
 
   # Two lines in GFF file
