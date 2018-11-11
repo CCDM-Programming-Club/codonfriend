@@ -1,7 +1,7 @@
 context("Read GFF3 files.")
 library(codonfriend)
 library(rtracklayer)
-
+library(ape)
 library(GenomicRanges)
 
 
