@@ -84,10 +84,7 @@ read_gff3 <- function(path) {
   gff.file <- read.gff(path)
   # Import files by adding to docstring like in `parse_cai`. E.g.
   # #' @importFrom GenomicRanges GRanges
-<<<<<<< HEAD
   gff3 <- readGFF(path)
   return(gff3)
-=======
-  lines <- readLines(gff.file)
->>>>>>> b532d5ba2085fb9998867ce2be519d193c516dc7
+
 }
