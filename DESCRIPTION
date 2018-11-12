@@ -21,10 +21,11 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
-Imports:
-  stringr,
+biocViews:
   rtracklayer,
   GenomicRanges
+Imports:
+  stringr
 Suggests:
     tibble,
     readr,
