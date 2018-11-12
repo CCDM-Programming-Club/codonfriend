@@ -21,7 +21,7 @@ test_that("join_cai can join simple files.", {
     cai = c(1.0, 0.1, 0.5, 0.3)
   )
   
-  result <- join_cai(gr2, cai2)
+  result <- join_cai(gr1, cai1)
 
   # Did we keep all of the rows and add the new column?
   expect_equal(dim(mcols(result)), c(4, 2))
@@ -60,7 +60,7 @@ test_that("join_cai can handle extra columns and odd ID values.", {
     class = c("H", "I", "H")
   )
   
-  result <- join_cai(gr1, cai1)
+  result <- join_cai(gr2, cai2)
 
   # Did we keep all of the rows and add the new columns?
   expect_equal(dim(mcols(result)), c(7, 4))
@@ -80,6 +80,6 @@ test_that("join_cai can handle extra columns and odd ID values.", {
   # Do the class values get added?
   expect_equal(
     mcols(result[c("B", "F", "E", "A", "C", "D", "G")])[["class"]],
-    c("H", "H", "I", NA, NA, NA, NA)
+    as.factor(c("H", "H", "I", NA, NA, NA, NA))
   )
 })

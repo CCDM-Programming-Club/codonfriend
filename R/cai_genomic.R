@@ -15,10 +15,22 @@
 #' gr <- join_cai(gff, cai)
 #' head(gr)
 #' 
+#' @importFrom GenomicRanges mcols
 #' @export
 join_cai <- function(gr, cai) {
-  # Add your code here!
-  # Import files by adding to docstring like in `parse_cai`. E.g.
-  # #' @importFrom GenomicRanges GRanges
-  # #' @importFrom GenomicRanges mcols
+  meta <- mcols(gr, use.names = TRUE)
+  meta$tmp_order <- 1:nrow(meta)
+  merged <- merge(
+    meta,
+    cai,
+    by.x="ID",
+    by.y="seqid",
+    all.x = TRUE,
+    all.y = FALSE,
+    sort = FALSE
+  )
+  merged <- merged[order(merged$tmp_order),]
+  merged$tmp_order <- NULL
+  mcols(gr) <- merged
+  return(gr)
 }
