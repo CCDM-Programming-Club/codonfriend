@@ -76,10 +76,13 @@ read_many <- function(paths, FUN=read_cai, colname="file") {
 #' gff <- read_gff3(path)
 #' head(gff)
 #' 
+#' @importFrom rtracklayer
+#' @importFrom GenomicRanges GRanges
 #' @export
 read_gff3 <- function(path) {
   # Add your code here!
   # Import files by adding to docstring like in `parse_cai`. E.g.
   # #' @importFrom GenomicRanges GRanges
-  lines <- readLines(path)
+  gff3 <- readGFF(path)
+  return(gff3)
 }
