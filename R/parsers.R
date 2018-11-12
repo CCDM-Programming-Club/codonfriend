@@ -76,7 +76,7 @@ read_many <- function(paths, FUN=read_cai, colname="file") {
 #' gff <- read_gff3(path)
 #' head(gff)
 #' 
-#' @importFrom rtracklayer
+#' @importFrom rtracklayer readGFF
 #' @importFrom GenomicRanges GRanges
 #' @export
 read_gff3 <- function(path) {
