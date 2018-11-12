@@ -1,7 +1,6 @@
 context("Read GFF3 files.")
 library(codonfriend)
 library(rtracklayer)
-
 library(GenomicRanges)
 
 
@@ -27,16 +26,16 @@ test_that("read_gff3 parses file", {
 
   # Two lines in GFF file
   expect_equal(length(gff), 2)
-
+  
   # Starts are correct
   expect_equal(start(ranges(gff)), c(1, 1))
-
+  
   # Ends are correct
-  expect_equal(start(ranges(gff)), c(5, 5))
-
+  expect_equal(end(ranges(gff)), c(5, 5))
+  
   # Specified ids are correct.
   expect_equal(mcols(gff)[, "ID"], c("id1", "id1.t1"))
   
   # Feature types are correct.
-  expect_equal(mcols(gff)[, "type"], c("gene", "mRNA"))
+  expect_equal (as.character(mcols(gff)[, "type"]), c("gene", "mRNA"))
 })
