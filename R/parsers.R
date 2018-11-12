@@ -64,3 +64,26 @@ read_many <- function(paths, FUN=read_cai, colname="file") {
     )
   )
 }
+
+
+#' Read a GFF3 file as a GRanges object..
+#' 
+#' @param path The path to the GFF file.
+#' @return A GenomicRanges `GRanges` object.
+#' @examples
+#' 
+#' path <- system.file("extdata", "Lepmu1.gff3", package = "codonfriend")
+#' gff <- read_gff3(path)
+#' head(gff)
+#' 
+#' @importFrom rtracklayer readGFFAsGRanges
+#' @importFrom GenomicRanges GRanges
+#' @export
+read_gff3 <- function(path) {
+  # Add your code here! Paula
+  # Import files by adding to docstring like in `parse_cai`. E.g.
+  # #' @importFrom GenomicRanges GRanges
+  gff3 <- readGFFAsGRanges(path)
+  return(gff3)
+
+}
